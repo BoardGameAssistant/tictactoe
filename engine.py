@@ -17,6 +17,8 @@ class GameEngine(object):
         self.gameboard = ["?"] * 9
         self.currentbuffer = 0
         self._gameboard = None  # temporary variable for opencv board
+        self.save_gameboard = None
+
         self.moves = []
         self.diff = None
         self.debug = debug
@@ -216,9 +218,17 @@ class GameEngine(object):
         image = cv2.imread(gameboard_file)
         self._gameboard = Gameboard.detect_game_board(image, debug=self.debug)
 
+    def is_winner(self, use_camera=False, gameboard_file="images/one_average_x.jpg"):
+        self._parse_gameboard(gameboard_file)
+        self.gameboard = self._gameboard.status()
+        winner = self._is_game_won()
+        return winner, self.ai_player
+
+
     def start(self, use_camera=False, gameboard_file="images/one_average_x.jpg"):
         self._parse_gameboard(gameboard_file)
         self.gameboard = self._gameboard.status()
+        self.save_gameboard = self.gameboard.copy()
         # self.show_gameboard()
         # print("==========")
         # if not self._is_board_empty():
@@ -250,10 +260,10 @@ class GameEngine(object):
             # self.show_gameboard()
         winner = self._is_game_won()
         if winner == "tie":
-            return self.gameboard, True, "A TIE!"
+            return self.gameboard, self.save_gameboard, True, "A TIE!"
         elif winner == self.player:
-            return self.gameboard, True, self.ai_player
+            return self.gameboard, self.save_gameboard, True, self.ai_player
         elif winner == self.ai_player:
-            return self.gameboard, True, self.ai_player
-        return self.gameboard, False, None
+            return self.gameboard, self.save_gameboard, True, self.ai_player
+        return self.gameboard, self.save_gameboard, False, None
 
