@@ -1,9 +1,9 @@
 import cv2
 import numpy as np
-from scipy.spatial import distance as dist
 import imutils
 import matplotlib.pyplot as plt
 
+from scipy.spatial import distance as dist
 
 class Gameboard(object):
     boardtype = "3x3"

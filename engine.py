@@ -1,14 +1,9 @@
 import cv2
-import numpy as np
-import imutils
-import pdb
 import random
+
 from time import sleep
-
 from random import randint
-
-from scipy.spatial import distance as dist
-from gameboard import Gameboard, Gameposition
+from .gameboard import Gameboard
 PLAYERS = ["X", "O"]
 
 

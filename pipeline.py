@@ -1,24 +1,22 @@
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
 
-from gamevalidator import validate_conditions
-from gameboard import Gameboard
-from engine import GameEngine
+from .gamevalidator import validate_conditions
+from .gameboard import Gameboard
+from .engine import GameEngine
 
 
-def pipeline(image_path: str = "images/small_one_cross.jpg"):
+def pipeline(image_path: str = ""):
 
     image = cv2.imread(image_path)
     gameboard = Gameboard.detect_game_board(image, debug=0)
     status = gameboard.status()
-    # print(status)
     cnt, status_bool = validate_conditions(status)
     if status_bool is False:
         return ["GAME IS NOT VALID!"]
 
     ge = GameEngine(currentplayer="X", debug=0)
-    winner, player = ge.is_winner(gameboard_file=image_path)
+    winner, _ = ge.is_winner(gameboard_file=image_path)
     output = []
     if winner:
         output.append(f"GAME OVER! THE WINNER IS '{winner}'!")
@@ -119,21 +117,19 @@ def write_text(text):
 
 def execute_pipline(image_path="5.jpg"):
     try:
-        output_list = pipeline(image_path="5.jpg")
+        output_list = pipeline(image_path=image_path)
         telegram_output = []
         for output in output_list:
             if isinstance(output, list):
                 image = drawer(output[0], output[1])
-                plt.imshow(image)
-                plt.show()
+                # plt.imshow(image)
+                # plt.show()
                 telegram_output.append(image)
             else:
                 image = write_text(output)
-                plt.imshow(image)
-                plt.show()
+                # plt.imshow(image)
+                # plt.show()
                 telegram_output.append(image)
         return telegram_output
     except:
         return ["Cannot detect game properly"]
-
-execute_pipline(image_path="5.jpg")
